@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#3949ab">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Euromilioni">
+<title>Euromilioni — Analisi \& Statistiche</title>
+<link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiRXVyb21pbGlvbmkgLSBBbmFsaXNpICYgU3RhdGlzdGljaGUiLCJzaG9ydF9uYW1lIjoiRXVyb21pbGlvbmkiLCJzdGFydF91cmwiOiIuLyIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiNmNWY3ZmEiLCJ0aGVtZV9jb2xvciI6IiMzOTQ5YWIiLCJpY29ucyI6W3sic3JjIjoiZGF0YTppbWFnZS9zdmcreG1sLDxzdmcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyB2aWV3Qm94PScwIDAgMTAwIDEwMCc+PHJlY3Qgd2lkdGg9JzEwMCcgaGVpZ2h0PScxMDAnIGZpbGw9JyMzOTQ5YWInIHJ4PScyMCcvPjx0ZXh0IHg9JzUwJScgeT0nNTUnJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyBmaWxsPSd3aGl0ZScgZm9udC1zaXplPSc1MCcgZm9udC1mYW1pbHk9J3N5c3RlbSc+8J+OqDwvdGV4dD48L3N2Zz4iLCJzaXplcyI6IjE5MngxOTIiLCJ0eXBlIjoiaW1hZ2Uvc3ZnK3htbCJ9XX0=">
+<style>
+
+\*{box-sizing:border-box; font-family:system-ui, -apple-system, sans-serif;}
+
+:root {--primario:#3949ab; --scuro:#283593; --oro:#ffc107; --pericolo:#c62828; --successo:#2e7d32; --sfondo:#f5f7fa; --card:#ffffff; --testo:#333333;}
+
+body{max-width:1200px; margin:0 auto; padding:16px; background:var(--sfondo); color:var(--testo); min-height:100vh;}
+
+h1{color:var(--primario); text-align:center; font-size:1.8rem; margin-bottom:10px;}
+
+h2{color:var(--scuro); border-bottom:2px solid var(--primario); padding-bottom:8px; margin-top:30px; font-size:1.3rem;}
+
+.disclaimer{background:#fff3cd; border-left:4px solid #ffc107; padding:15px; margin:15px 0; border-radius:4px; font-size:0.9rem;}
+
+.success{background:#e8f5e9; border-left:4px solid #4caf50; padding:15px; margin:15px 0; border-radius:4px;}
+
+.card{background:var(--card); border-radius:12px; padding:20px; margin:15px 0; box-shadow:0 2px 12px rgba(0,0,0,0.08);}
+
+.grid{display:grid; grid-template-columns:repeat(auto-fit, minmax:80px,1fr)); gap:10px; margin:15px 0;}
+
+.num{display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:50%; background:var(--primario); color:white; font-weight:bold; margin:3px; font-size:1rem;}
+
+.star{background:var(--oro); color:#212;}
+
+button{background:var(--primario); color:white; border:none; padding:11px 20px; border-radius:8px; font-size:1rem; cursor:pointer; margin:4px; transition:transform 0.15s;}
+
+button:active{transform:scale(0.97);}
+
+button:hover{background:var(--scuro);}
+
+button.green{background:var(--successo);}
+
+button.green:hover{background:#1b5e20;}
+
+button.red{background:var(--pericolo);}
+
+button.red:hover{background:#b71c1c;}
+
+table{width:100%; border-collapse:collapse; margin:15px 0; font-size:0.9rem;}
+
+th,td{padding:9px; text-align:center; border-bottom:1px solid #eee;}
+
+th{background:#e8eaf6; font-weight:600;}
+
+.progress-bar{height:8px; background:#e0e0e0; border-radius:4px; overflow:hidden;}
+
+.progress-fill{height:100%; background:var(--primario); transition:width 0.3s ease;}
+
+.hot{color:#d32f2f; font-weight:bold;}
+
+.cold{color:#2f62d3; font-weight:bold;}
+
+.late{color:#e65100; font-weight:bold;}
+
+input,select{padding:10px; border-radius:6px; border:1px solid #ccc; margin:4px; font-size:1rem;}
+
+input\[type="number"]{width:70px;}
+
+.stats-row{display:flex; flex-wrap:wrap; gap:12px; margin:10px 0;}
+
+.stat-box{flex:1; min-width:130px; padding:15px; background:#e8eaf6; border-radius:10px; text-align:center;}
+
+.stat-box h3{margin:0; font-size:1.4rem; color:var(--primario);}
+
+.tabs{display:flex; flex-wrap:wrap; gap:6px; margin:10px 0;}
+
+.tab{padding:12px 16px; background:#e3f2fd; border-radius:8px; cursor:pointer; font-weight:500; transition:all 0.2s;}
+
+.tab.active{background:var(--primario); color:white; box-shadow:0 2px 6px rgba(57,73,171,0.3);}
+
+.tab-content{display:none; animation:fadeIn 0.3s;}
+
+.tab-content.active{display:block;}
+
+@keyframes fadeIn{from{opacity:0; transform:translateY(5px);} to{opacity:1; transform:none;}}
+
+\#risultato{font-size:1.8rem; padding:20px; background:linear-gradient(135deg,#e8eaf6,#f3e5f5); border-radius:12px; text-align:center;}
+
+\#salvate > div{padding:10px; background:#f0f4ff; border-radius:8px; margin:6px 0; display:flex; align-items:center; flex-wrap:wrap; gap:4px;}
+
+</head>
+<body>
+
+<h1>🎰 Euromilioni — Analisi \& Statistiche</h1>
+
+<div class="disclaimer">
+  <strong>⚠️ Avvertenza importante:</strong> L'Euromilioni è un gioco d'azzardo basato su estrazioni completamente casuali. Nessuna statistica può predire i numeri vincenti. Le analisi qui presentate si riferiscono solo a dati storici. <strong>Gioca responsabilmente</strong> — solo quanto puoi permetterti di perdere.
+</div>
+
+<div class="tabs">
+  <div class="tab active" data-tab="dati">📊 Dati</div>
+  <div class="tab" data-tab="ritardo">⏳ Ritardo</div>
+  <div class="tab" data-tab="genera">🔮 Genera</div>
+  <div class="tab" data-tab="verifica">✅ Verifica</div>
+  <div class="tab" data-tab="aggiungi">➕ Nuova</div>
+</div>
+
+<div class="tab-content active" id="dati">
+<div class="card">
+  <h2>📊 Riepilogo</h2>
+  <div class="stats-row">
+    <div class="stat-box"><h3 id="totEstrazioni">49</h3><p>Estrazioni totali</p></div>
+    <div class="stat-box"><h3 id="dataUltima">18-Sep-26</h3><p>Ultima uscita</p></div>
+    <div class="stat-box"><h3>1:139,8M</h3><p>Probabilità Jackpot</p></div>
+    <div class="stat-box"><h3>1:13</h3><p>Qualsiasi premio</p></div>
+  </div>
+  <button onclick="esportaDati()">📤 Esporta Dati</button>
+  <button class="red" onclick="resettaDati()">🗑️ Azzera Tutto</button>
+</div>
+<div class="card">
+  <h2>🔥 Frequenza Numeri</h2>
+  <p>Media attesa: <span id="mainAvg">—</span> volte | <span class="hot">Rosso = sopra media</span> | <span class="cold">Blu = sotto media</span></p>
+  <div id="mainFreq"></div>
+</div>
+<div class="card">
+  <h2>⭐ Frequenza Stelle</h2>
+  <p>Media attesa: <span id="starAvg">—</span> volte</p>
+  <div id="starFreq"></div>
+</div>
+<div class="card">
+  <h2>🎯 Probabilità Ufficiali</h2>
+  <table>
+    <tr><th>Livello</th><th>Combinazione</th><th>1 su</th><th>Probabilità</th></tr>
+    <tr><td>🏆 Jackpot</td><td>5+2⭐</td><td>139.838.160</td><td>0,00000072%</td></tr>
+    <tr><td>2</td><td>5+1⭐</td><td>6.991.908</td><td>0,0000143%</td></tr>
+    <tr><td>3</td><td>5+0⭐</td><td>3.107.515</td><td>0,0000322%</td></tr>
+    <tr><td>4</td><td>4+2⭐</td><td>621.503</td><td>0,00016%</td></tr>
+    <tr><td>5</td><td>4+1⭐</td><td>31.076</td><td>0,0032%</td></tr>
+    <tr><td>6</td><td>3+2⭐</td><td>14.126</td><td>0,0071%</td></tr>
+    <tr><td>7</td><td>4+0⭐</td><td>13.812</td><td>0,0072%</td></tr>
+    <tr><td>8</td><td>3+1⭐</td><td>706</td><td>0,14%</td></tr>
+    <tr><td>9</td><td>2+2⭐</td><td>498</td><td>0,20%</td></tr>
+    <tr><td>10</td><td>3+0⭐</td><td>314</td><td>0,32%</td></tr>
+    <tr><td>11</td><td>2+1⭐</td><td>22</td><td>4,5%</td></tr>
+    <tr><td>12</td><td>1+2⭐</td><td>138</td><td>0,72%</td></tr>
+    <tr><td>13</td><td>2+0⭐</td><td>16</td><td>6,25%</td></tr>
+  </table>
+</div>
+</div>
+
+<div class="tab-content" id="ritardo">
+<div class="card">
+  <h2>⏳ Numeri in Ritardo</h2>
+  <p>Estrazioni passate dall'ultima uscita | <span class="late">Arancione = maggiore ritardo</span></p>
+  <h3>Numeri Principali (1-50)</h3>
+  <div id="mainRitardo" class="grid"></div>
+  <h3>Stelle (1-12)</h3>
+  <div id="starRitardo" class="grid"></div>
+  <h3>🏆 Top 10 più in Ritardo</h3>
+  <table id="topRitardo"></table>
+</div>
+</div>
+
+<div class="tab-content" id="genera">
+<div class="card">
+  <h2>🔮 Generatore Combinazioni</h2>
+  <p>Metodo di generazione: </p>
+  <select id="metodo" onchange="genera()">
+    <option value="caldi">🔥 Caldi (più estratti)</option>
+    <option value="freddi">❄️ Freddi (meno estratti)</option>
+    <option value="ritardo">⏳ In Ritardo</option>
+    <option value="misto">⚖️ Misto (Caldi + Ritardo)</option>
+    <option value="casuale">🎲 Completamente Casuale</option>
+  </select>
+  <h3>Combinazione Suggerita:</h3>
+  <div id="risultato">—</div>
+  <p id="note" style="margin-top:15px; color:#666; font-size:0.9rem;">⚠️ Ogni combinazione ha identica probabilità: 1 su 139.838.160</p>
+  <button onclick="genera()">🔄 Nuova Combinazione</button>
+  <button class="green" onclick="salvaCombinazione()">💾 Salva</button>
+  <h3>Combinazioni Salvate:</h3>
+  <div id="salvate">Nessuna combinazione salvata.</div>
+</div>
+</div>
+
+<div class="tab-content" id="verifica">
+<div class="card">
+  <h2>✅ Verifica le Tue Giocate</h2>
+  <p>Inserisci la combinazione e controlla se avrebbe vinto nelle estrazioni passate:</p>
+  <div>
+    Numeri: 
+    <input type="number" id="v1" min="1" max="50">
+    <input type="number" id="v2" min="1" max="50">
+    <input type="number" id="v3" min="1" max="50">
+    <input type="number" id="v4" min="1" max="50">
+    <input type="number" id="v5" min="1" max="50">
+    &nbsp;&nbsp;
+    Stelle: 
+    <input type="number" id="s1" min="1" max="12">
+    <input type="number" id="s2" min="1" max="12">
+  </div>
+  <br>
+  <button onclick="verifica()">🔍 Controlla</button>
+  <button onclick="verificaTutte()">✅ Verifica Tutte le Salvate</button>
+  <h3>Risultato:</h3>
+  <div id="verificaRisultato" style="padding:15px; background:#f5f5f5; border-radius:8px;">Inserisci i numeri e clicca "Controlla"</div>
+  <div id="verificaSalvate"></div>
+</div>
+</div>
+
+<div class="tab-content" id="aggiungi">
+<div class="card">
+  <h2>➕ Aggiungi Nuova Estrazione</h2>
+  <p>Inserisci i dati dell'ultima estrazione ufficiale per aggiornare le statistiche:</p>
+  <div>Data: <input type="text" id="nuovaData" placeholder="es: 20-Sep-26" style="width:160px;"></div>
+  <div style="margin:8px 0;">
+    Numeri (1-50): 
+    <input type="number" id="n1" min="1" max="50">
+    <input type="number" id="n2" min="1" max="50">
+    <input type="number" id="n3" min="1" max="50">
+    <input type="number" id="n4" min="1" max="50">
+    <input type="number" id="n5" min="1" max="50">
+  </div>
+  <div style="margin:8px 0;">
+    Stelle (1-12): 
+    <input type="number" id="st1" min="1" max="12">
+    <input type="number" id="st2" min="1" max="12">
+  </div>
+  <br>
+  <button class="green" onclick="aggiungiEstrazione()">✅ Aggiungi Estrazione</button>
+  <div id="msgAggiungi" style="margin-top:12px;"></div>
+  <h3>Ultime 10 Estrazioni:</h3>
+  <div id="elencoEstrazioni"></div>
+</div>
+</div>
+
+<script>
+
+const DATI\_INIZIALI = \[
+
+&#x20; {data:"18-Sep-26", main:\[8,17,25,30,44], stars:\[2,3]},
+
+&#x20; {data:"15-Sep-26", main:\[10,16,18,22,28], stars:\[6,10]},
+
+&#x20; {data:"11-Sep-26", main:\[1,7,15,39,50], stars:\[1,11]},
+
+&#x20; {data:"08-Sep-26", main:\[13,17,33,35,39], stars:\[7,12]},
+
+&#x20; {data:"04-Sep-26", main:\[11,12,19,27,46], stars:\[4,12]},
+
+&#x20; {data:"01-Sep-26", main:\[2,10,23,37,47], stars:\[3,5]},
+
+&#x20; {data:"28-Aug-26", main:\[7,14,28,42,45], stars:\[6,9]},
+
+&#x20; {data:"25-Aug-26", main:\[8,16,30,47,48], stars:\[4,9]},
+
+&#x20; {data:"21-Aug-26", main:\[10,14,15,19,45], stars:\[4,12]},
+
+&#x20; {data:"18-Aug-26", main:\[3,9,38,40,50], stars:\[6,10]},
+
+&#x20; {data:"14-Aug-26", main:\[5,29,39,48,49], stars:\[4,8]},
+
+&#x20; {data:"11-Aug-26", main:\[3,11,17,46,48], stars:\[1,2]},
+
+&#x20; {data:"07-Aug-26", main:\[26,29,35,38,47], stars:\[1,2]},
+
+&#x20; {data:"04-Aug-26", main:\[25,30,34,46,50], stars:\[1,12]},
+
+&#x20; {data:"31-Jul-26", main:\[10,24,25,31,45], stars:\[4,5]},
+
+&#x20; {data:"28-Jul-26", main:\[5,7,24,30,49], stars:\[10,11]},
+
+&#x20; {data:"24-Jul-26", main:\[8,10,30,36,47], stars:\[1,4]},
+
+&#x20; {data:"21-Jul-26", main:\[2,3,8,28,39], stars:\[2,11]},
+
+&#x20; {data:"17-Jul-26", main:\[12,21,23,34,40], stars:\[9,10]},
+
+&#x20; {data:"14-Jul-26", main:\[10,19,37,42,47], stars:\[9,12]},
+
+&#x20; {data:"10-Jul-26", main:\[2,14,28,33,48], stars:\[8,10]},
+
+&#x20; {data:"07-Jul-26", main:\[5,29,33,45,47], stars:\[5,8]},
+
+&#x20; {data:"03-Jul-26", main:\[2,12,17,25,39], stars:\[1,2]},
+
+&#x20; {data:"30-Jun-26", main:\[1,8,37,44,48], stars:\[2,6]},
+
+&#x20; {data:"26-Jun-26", main:\[6,16,26,34,35], stars:\[11,12]},
+
+&#x20; {data:"23-Jun-26", main:\[3,33,36,45,46], stars:\[5,6]},
+
+&#x20; {data:"19-Jun-26", main:\[8,34,39,41,42], stars:\[2,7]},
+
+&#x20; {data:"16-Jun-26", main:\[18,25,31,37,45], stars:\[4,9]},
+
+&#x20; {data:"12-Jun-26", main:\[4,7,14,22,23], stars:\[1,7]},
+
+&#x20; {data:"09-Jun-26", main:\[2,7,23,44,46], stars:\[3,5]},
+
+&#x20; {data:"05-Jun-26", main:\[5,6,16,17,49], stars:\[2,12]},
+
+&#x20; {data:"02-Jun-26", main:\[6,9,17,18,42], stars:\[7,9]},
+
+&#x20; {data:"29-May-26", main:\[5,14,18,31,35], stars:\[2,12]},
+
+&#x20; {data:"26-May-26", main:\[6,23,25,35,37], stars:\[6,12]},
+
+&#x20; {data:"22-May-26", main:\[6,22,26,31,37], stars:\[5,8]},
+
+&#x20; {data:"19-May-26", main:\[2,12,20,38,45], stars:\[2,5]},
+
+&#x20; {data:"15-May-26", main:\[3,10,38,41,43], stars:\[2,9]},
+
+&#x20; {data:"12-May-26", main:\[4,26,32,35,36], stars:\[5,7]},
+
+&#x20; {data:"08-May-26", main:\[2,17,19,34,37], stars:\[8,11]},
+
+&#x20; {data:"05-May-26", main:\[3,4,8,20,31], stars:\[6,8]},
+
+&#x20; {data:"01-May-26", main:\[3,9,42,46,47], stars:\[1,11]},
+
+&#x20; {data:"28-Apr-26", main:\[26,29,41,46,47], stars:\[8,9]},
+
+&#x20; {data:"24-Apr-26", main:\[25,26,30,40,45], stars:\[1,5]},
+
+&#x20; {data:"21-Apr-26", main:\[13,16,29,40,47], stars:\[3,4]},
+
+&#x20; {data:"17-Apr-26", main:\[22,23,28,41,47], stars:\[6,8]},
+
+&#x20; {data:"14-Apr-26", main:\[1,2,4,28,44], stars:\[5,12]},
+
+&#x20; {data:"10-Apr-26", main:\[10,13,14,38,41], stars:\[6,9]},
+
+&#x20; {data:"07-Apr-26", main:\[11,14,19,36,49], stars:\[6,7]},
+
+&#x20; {data:"03-Apr-26", main:\[8,27,29,46,49], stars:\[2,10]},
+
+&#x20; {data:"31-Mar-26", main:\[5,8,10,33,38], stars:\[2,7]},
+
+&#x20; {data:"27-Mar-26", main:\[4,10,43,44,48], stars:\[2,4]},
+
+&#x20; {data:"24-Mar-26", main:\[12,16,17,18,27], stars:\[1,3]}
+
+];
+
+
+
+let estrazioni = \[];
+
+let combSalvate = \[];
+
+
+
+function caricaDati(){
+
+&#x20; const salvati = localStorage.getItem('euromilioni\_dati');
+
+&#x20; if(salvati){estrazioni = JSON.parse(salvati);}
+
+&#x20; else{estrazioni = \[...DATI\_INIZIALI]; salvaDati();}
+
+&#x20; const salvate = localStorage.getItem('euromilioni\_salvate');
+
+&#x20; if(salvate) combSalvate = JSON.parse(salvate);
+
+&#x20; aggiornaInterfaccia();
+
+}
+
+function salvaDati(){localStorage.setItem('euromilioni\_dati', JSON.stringify(estrazioni));}
+
+function salvaCombinazioni(){localStorage.setItem('euromilioni\_salvate', JSON.stringify(combSalvate));}
+
+function resettaDati(){
+
+&#x20; if(confirm("Sei sicuro di voler azzerare TUTTI i dati e ripristinare quelli iniziali?")){
+
+&#x20;   localStorage.removeItem('euromilioni\_dati'); localStorage.removeItem('euromilioni\_salvate');
+
+&#x20;   estrazioni = \[...DATI\_INIZIALI]; combSalvate = \[]; salvaDati(); aggiornaInterfaccia();
+
+&#x20;   alert("Dati ripristinati con successo!");
+
+&#x20; }
+
+}
+
+function esportaDati(){
+
+&#x20; const a = document.createElement('a');
+
+&#x20; a.href = URL.createObjectURL(new Blob(\[JSON.stringify(estrazioni,null,2)], {type:'application/json'}));
+
+&#x20; a.download = `Euromilioni\_Dati\_${new Date().toISOString().slice(0,10)}.json`; a.click();
+
+}
+
+function calcolaFrequenze(){
+
+&#x20; const fm=Array(51).fill(0), fs=Array(13).fill(0);
+
+&#x20; estrazioni.forEach(e=>{e.main.forEach(n=>fm\[n]++); e.stars.forEach(n=>fs\[n]++);});
+
+&#x20; return {freqMain:fm, freqStar:fs};
+
+}
+
+function calcolaRitardi(){
+
+&#x20; const rm=Array(51).fill(null), rs=Array(13).fill(null);
+
+&#x20; for(let n=1;n<=50;n++){let f=false; for(let i=0;i<estrazioni.length;i++){if(estrazioni\[i].main.includes(n)){rm\[n]=i;f=true;break;}}if(!f)rm\[n]=estrazioni.length;}
+
+&#x20; for(let n=1;n<=12;n++){let f=false; for(let i=0;i<estrazioni.length;i++){if(estrazioni\[i].stars.includes(n)){rs\[n]=i;f=true;break;}}if(!f)rs\[n]=estrazioni.length;}
+
+&#x20; return {ritMain:rm, ritStar:rs};
+
+}
+
+function aggiungiEstrazione(){
+
+&#x20; const d=document.getElementById('nuovaData').value.trim();
+
+&#x20; const nums=\[1,2,3,4,5].map(i=>parseInt(document.getElementById('n'+i).value)).filter(n=>!isNaN(n));
+
+&#x20; const stars=\[1,2].map(i=>parseInt(document.getElementById('st'+i).value)).filter(n=>!isNaN(n));
+
+&#x20; if(!d||nums.length!==5||stars.length!==2){
+
+&#x20;   document.getElementById('msgAggiungi').innerHTML='<span style="color:red;">❌ Compila tutti i campi correttamente!</span>'; return;
+
+&#x20; }
+
+&#x20; if(new Set(nums).size!==5||new Set(stars).size!==2){
+
+&#x20;   document.getElementById('msgAggiungi').innerHTML='<span style="color:red;">❌ Numeri duplicati! Inserisci valori diversi.</span>'; return;
+
+&#x20; }
+
+&#x20; if(nums.some(n=>n<1||n>50) || stars.some(n=>n<1||n>12)){
+
+&#x20;   document.getElementById('msgAggiungi').innerHTML='<span style="color:red;">❌ Numeri fuori intervallo! 1-50 per numeri, 1-12 per stelle.</span>'; return;
+
+&#x20; }
+
+&#x20; estrazioni.unshift({data:d, main:nums.sort((a,b)=>a-b), stars:stars.sort((a,b)=>a-b)});
+
+&#x20; salvaDati(); aggiornaInterfaccia();
+
+&#x20; document.getElementById('msgAggiungi').innerHTML='<span style="color:green;">✅ Estrazione aggiunta! Le statistiche sono aggiornate.</span>';
+
+&#x20; document.getElementById('nuovaData').value=''; \[1,2,3,4,5].forEach(i=>document.getElementById('n'+i).value=''); \[1,2].forEach(i=>document.getElementById('st'+i).value='');
+
+}
+
+function aggiornaInterfaccia(){
+
+&#x20; const tot=estrazioni.length;
+
+&#x20; document.getElementById('totEstrazioni').textContent=tot;
+
+&#x20; document.getElementById('dataUltima').textContent=estrazioni\[0]?.data||'—';
+
+&#x20; const {freqMain:fm, freqStar:fs}=calcolaFrequenze();
+
+&#x20; const ma=(tot\*5/50).toFixed(2), ms=(tot\*2/12).toFixed(2);
+
+&#x20; document.getElementById('mainAvg').textContent=ma; document.getElementById('starAvg').textContent=ms;
+
+&#x20; let h='<div class="grid">';
+
+&#x20; for(let n=1;n<=50;n++){let c=''; if(fm\[n]>parseFloat(ma)\*1.25)c='hot'; else if(fm\[n]<parseFloat(ma)\*0.75)c='cold';
+
+&#x20;   h+=`<div><span class="num">${String(n).padStart(2,'0')}</span><br><span class="${c}">${fm\[n]} volte</span><div class="progress-bar"><div class="progress-fill" style="width:${Math.min(fm\[n]/ma\*100,150)}%;"></div></div></div>`;}
+
+&#x20; h+='</div>'; document.getElementById('mainFreq').innerHTML=h;
+
+&#x20; h='<div class="grid">';
+
+&#x20; for(let n=1;n<=12;n++){let c=''; if(fs\[n]>parseFloat(ms)\*1.25)c='hot'; else if(fs\[n]<parseFloat(ms)\*0.75)c='cold';
+
+&#x20;   h+=`<div><span class="num star">${String(n).padStart(2,'0')}</span><br><span class="${c}">${fs\[n]} volte</span><div class="progress-bar"><div class="progress-fill" style="width:${Math.min(fs\[n]/ms\*100,150)}%;"></div></div></div>`;}
+
+&#x20; h+='</div>'; document.getElementById('starFreq').innerHTML=h;
+
+&#x20; const {ritMain:rm, ritStar:rs}=calcolaRitardi();
+
+&#x20; h='<div class="grid">';
+
+&#x20; for(let n=1;n<=50;n++){h+=`<div><span class="num">${String(n).padStart(2,'0')}</span><br><span class="${rm\[n]>=10?'late':''}">${rm\[n]}</span><br><small>estrazioni</small></div>`;}
+
+&#x20; h+='</div>'; document.getElementById('mainRitardo').innerHTML=h;
+
+&#x20; h='<div class="grid">';
+
+&#x20; for(let n=1;n<=12;n++){h+=`<div><span class="num star">${String(n).padStart(2,'0')}</span><br><span class="${rs\[n]>=8?'late':''}">${rs\[n]}</span><br><small>estrazioni</small></div>`;}
+
+&#x20; h+='</div>'; document.getElementById('starRitardo').innerHTML=h;
+
+&#x20; const top=\[...Array(51).keys()].slice(1).map(n=>({n,r:rm\[n]})).sort((a,b)=>b.r-a.r).slice(0,10);
+
+&#x20; h='<tr><th>Posizione</th><th>Numero</th><th>Estrazioni dall\&apos;ultima uscita</th></tr>';
+
+&#x20; top.forEach((x,i)=>h+=`<tr><td>${i+1}</td><td><b>${x.n}</b></td><td class="late">${x.r}</td></tr>`);
+
+&#x20; document.getElementById('topRitardo').innerHTML=h;
+
+&#x20; h='<table><tr><th>Data</th><th>Numeri</th><th>Stelle</th></tr>';
+
+&#x20; estrazioni.slice(0,10).forEach(e=>h+=`<tr><td>${e.data}</td><td>${e.main.join(', ')}</td><td>${e.stars.join(', ')}</td></tr>`);
+
+&#x20; h+='</table>'; document.getElementById('elencoEstrazioni').innerHTML=h;
+
+&#x20; aggiornaSalvate();
+
+}
+
+function aggiornaSalvate(){
+
+&#x20; if(combSalvate.length===0){document.getElementById('salvate').innerHTML='Nessuna combinazione salvata.'; return;}
+
+&#x20; document.getElementById('salvate').innerHTML=combSalvate.map((c,i)=>`<div>${c.main.map(n=>`<span class="num" style="width:32px;height:32px;font-size:13px;">${String(n).padStart(2,'0')}</span>`).join('')} ⭐ ${c.stars.map(n=>`<span class="num star" style="width:32px;height:32px;font-size:13px;">${String(n).padStart(2,'0')}</span>`).join('')}<button class="red" style="padding:4px 8px; margin-left:auto;" onclick="rimuoviSalvata(${i})">✕</button></div>`).join('');
+
+}
+
+function salvaCombinazione(){
+
+&#x20; const testo=document.getElementById('risultato').textContent;
+
+&#x20; if(testo==='—' || !testo.trim()){alert('Genera prima una combinazione!'); return;}
+
+&#x20; const t=testo.replace(/\[⭐\\s]+/g,' ').trim().split(' ').filter(p=>p);
+
+&#x20; if(t.length===7){combSalvate.push({main:t.slice(0,5).map(Number), stars:t.slice(5,7).map(Number)}); salvaCombinazioni(); aggiornaSalvate(); alert('Combinazione salvata!');}
+
+&#x20; else alert('Genera una combinazione valida prima di salvare.');
+
+}
+
+function rimuoviSalvata(i){if(confirm('Eliminare questa combinazione?')){combSalvate.splice(i,1); salvaCombinazioni(); aggiornaSalvate();}}
+
+function pescaUnici(lista,quanti,pesi=null){
+
+&#x20; const res=\[], disp=\[...lista], w=pesi?\[...pesi]:disp.map(()=>1);
+
+&#x20; for(let i=0;i<quanti;i++){let s=w.reduce((a,b)=>a+b,0), r=Math.random()\*s; for(let j=0;j<disp.length;j++){r-=w\[j]; if(r<=0){res.push(disp\[j]); disp.splice(j,1); w.splice(j,1); break;}}}
+
+&#x20; return res.sort((a,b)=>a-b);
+
+}
+
+function genera(){
+
+&#x20; const {freqMain:fm, freqStar:fs}=calcolaFrequenze();
+
+&#x20; const {ritMain:rm, ritStar:rs}=calcolaRitardi();
+
+&#x20; const m=document.getElementById('metodo').value;
+
+&#x20; let num, st;
+
+&#x20; if(m==='caldi'){
+
+&#x20;   num=pescaUnici(\[...Array(51).keys()].slice(1).sort((a,b)=>fm\[b]-fm\[a]).slice(0,20),5);
+
+&#x20;   st=pescaUnici(\[...Array(13).keys()].slice(1).sort((a,b)=>fs\[b]-fs\[a]).slice(0,6),2);
+
+&#x20; } else if(m==='freddi'){
+
+&#x20;   num=pescaUnici(\[...Array(51).keys()].slice(1).sort((a,b)=>fm\[a]-fm\[b]).slice(0,20),5);
+
+&#x20;   st=pescaUnici(\[...Array(13).keys()].slice(1).sort((a,b)=>fs\[a]-fs\[b]).slice(0,6),2);
+
+&#x20; } else if(m==='ritardo'){
+
+&#x20;   num=pescaUnici(\[...Array(51).keys()].slice(1).sort((a,b)=>rm\[b]-rm\[a]).slice(0,20),5);
+
+&#x20;   st=pescaUnici(\[...Array(13).keys()].slice(1).sort((a,b)=>rs\[b]-rs\[a]).slice(0,6),2);
+
+&#x20; } else if(m==='misto'){
+
+&#x20;   const c=\[...Array(51).keys()].slice(1).sort((a,b)=>fm\[b]-fm\[a]).slice(0,15);
+
+&#x20;   const r=\[...Array(51).keys()].slice(1).sort((a,b)=>rm\[b]-rm\[a]).slice(0,15);
+
+&#x20;   num=pescaUnici(\[...new Set(\[...c,...r])],5);
+
+&#x20;   const cs=\[...Array(13).keys()].slice(1).sort((a,b)=>fs\[b]-fs\[a]).slice(0,6);
+
+&#x20;   const rs\_=\[...Array(13).keys()].slice(1).sort((a,b)=>rs\[b]-rs\[a]).slice(0,6);
+
+&#x20;   st=pescaUnici(\[...new Set(\[...cs,...rs\_])],2);
+
+&#x20; } else {num=pescaUnici(\[...Array(51).keys()].slice(1),5); st=pescaUnici(\[...Array(13).keys()].slice(1),2);}
+
+&#x20; document.getElementById('risultato').innerHTML=num.map(n=>`<span class="num">${String(n).padStart(2,'0')}</span>`).join('')+' \&nbsp; ⭐ '+st.map(n=>`<span class="num star">${String(n).padStart(2,'0')}</span>`).join('');
+
+}
+
+function calcolaPremi(ng, sg, nu, su){
+
+&#x20; const c=ng.filter(x=>nu.includes(x)).length, cs=sg.filter(x=>su.includes(x)).length;
+
+&#x20; if(c===5\&\&cs===2)return{l:1,n:"🏆 Jackpot"}; if(c===5\&\&cs===1)return{l:2,n:"🥈 5+1 Stella"}; if(c===5\&\&cs===0)return{l:3,n:"🥉 5+0 Stelle"};
+
+&#x20; if(c===4\&\&cs===2)return{l:4,n:"4+2 Stelle"}; if(c===4\&\&cs===1)return{l:5,n:"4+1 Stella"}; if(c===3\&\&cs===2)return{l:6,n:"3+2 Stelle"};
+
+&#x20; if(c===4\&\&cs===0)return{l:7,n:"4+0 Stelle"}; if(c===3\&\&cs===1)return{l:8,n:"3+1 Stella"}; if(c===2\&\&cs===2)return{l:9,n:"2+2 Stelle"};
+
+&#x20; if(c===3\&\&cs===0)return{l:10,n:"3+0 Stelle"}; if(c===2\&\&cs===1)return{l:11,n:"2+1 Stella"}; if(c===1\&\&cs===2)return{l:12,n:"1+2 Stelle"};
+
+&#x20; if(c===2\&\&cs===0)return{l:13,n:"2+0 Stelle"}; return{l:0,n:"Nessun premio"};
+
+}
+
+function verifica(){
+
+&#x20; const n=\[1,2,3,4,5].map(i=>parseInt(document.getElementById('v'+i).value)).filter(x=>!isNaN(x));
+
+&#x20; const s=\[1,2].map(i=>parseInt(document.getElementById('s'+i).value)).filter(x=>!isNaN(x));
+
+&#x20; if(n.length!==5||s.length!==2){document.getElementById('verificaRisultato').innerHTML='<span style="color:red;">❌ Inserisci tutti i numeri correttamente!</span>';return;}
+
+&#x20; if(new Set(n).size!==5||new Set(s).size!==2){document.getElementById('verificaRisultato').innerHTML='<span style="color:red;">❌ Numeri duplicati!</span>';return;}
+
+&#x20; const v=\[]; estrazioni.forEach(e=>{const p=calcolaPremi(n,s,e.main,e.stars); if(p.l>0)v.push({d:e.data,...p});});
+
+&#x20; document.getElementById('verificaRisultato').innerHTML=v.length?`<b>✅ ${v.length} corrispondenze trovate:</b><br>${v.map(x=>x.d+' — '+x.n).join('<br>')}':'Nessuna corrispondenza trovata su ${estrazioni.length} estrazioni.';
+
+}
+
+function verificaTutte(){
+
+&#x20; if(!combSalvate.length)return alert('Nessuna combinazione salvata!');
+
+&#x20; document.getElementById('verificaSalvate').innerHTML=combSalvate.map((c,i)=>{
+
+&#x20;   const v=\[]; estrazioni.forEach(e=>{const p=calcolaPremi(c.main,c.stars,e.main,e.stars); if(p.l>0)v.push(e.data+' — '+p.n);});
+
+&#x20;   return `<div style="padding:10px; background:${v.length?'#e8f5e9':'#f5f5f5'}; border-radius:8px; margin:6px 0;">Combinazione ${i+1}: ${c.main.join(', ')} | ⭐ ${c.stars.join(', ')} ${v.length?`<br><b>${v.length} corrispondenze:</b><br>${v.join('<br>')}`:'<br>Nessuna corrispondenza trovata'}</div>`;
+
+&#x20; }).join('');
+
+}
+
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
+
+&#x20; document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+
+&#x20; document.querySelectorAll('.tab-content').forEach(x=>x.classList.remove('active'));
+
+&#x20; t.classList.add('active'); document.getElementById(t.dataset.tab).classList.add('active');
+
+}));
+
+window.onload=caricaDati;
+
+</body>
+</html>
